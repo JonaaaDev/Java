@@ -1,8 +1,6 @@
 package com.mycalculator.app;
 
 import java.util.Random;
-import java.util.Scanner;
-import javax.swing.SwingUtilities;
 
 public class Calculator {
 
@@ -25,6 +23,7 @@ public class Calculator {
         return a / b;
     }
 
+    // Lógica para el modo "Misión" (Juego matemático)
     static class Mission {
         int operand1;
         int operand2;
@@ -59,9 +58,5 @@ public class Calculator {
             correctAnswer = (int) subtract(operand1, operand2);
         }
         return new Mission(operand1, operand2, operator, correctAnswer);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new CalculatorGUI());
     }
 }
