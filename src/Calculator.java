@@ -1,3 +1,6 @@
+import java.util.Random;
+import java.util.Scanner;
+
 public class Calculator {
 
     public int add(int a, int b) {
@@ -19,21 +22,73 @@ public class Calculator {
         return (double) a / b;
     }
 
-    public static void main(String[] args) {
-        System.out.println("¡Bienvenido a la Calculadora Java!");
-        
-        Calculator myCalculator = new Calculator();
+    static class Mission {
+        int operand1;
+        int operand2;
+        char operator;
+        int correctAnswer;
 
-        // Ejemplos de uso (puedes borrar estos luego):
-        System.out.println("Suma de 5 y 3: " + myCalculator.add(5, 3));         // Debería imprimir 8
-        System.out.println("Resta de 10 y 4: " + myCalculator.subtract(10, 4));  // Debería imprimir 6
-        System.out.println("Multiplicación de 6 y 7: " + myCalculator.multiply(6, 7)); // Debería imprimir 42
-        System.out.println("División de 10 y 2: " + myCalculator.divide(10, 2));   // Debería imprimir 5.0
-        
-        try {
-            System.out.println("División por cero: " + myCalculator.divide(10, 0));
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage()); // Debería imprimir "No se puede dividir por cero."
+        public Mission(int operand1, int operand2, char operator, int correctAnswer) {
+            this.operand1 = operand1;
+            this.operand2 = operand2;
+            this.operator = operator;
+            this.correctAnswer = correctAnswer;
         }
+
+        @Override
+        public String toString() {
+            return String.format("¿Cuánto es %d %c %d?", operand1, operator, operand2);
+        }
+    }
+
+    public Mission generateMission() {
+        Random random = new Random();
+        int operand1 = random.nextInt(10) + 1;
+        int operand2 = random.nextInt(10) + 1;
+        char operator;
+        int correctAnswer;
+
+        if (random.nextBoolean()) {
+            operator = '+';
+            correctAnswer = add(operand1, operand2);
+        } else {
+            operator = '-';
+            correctAnswer = subtract(operand1, operand2);
+        }
+        return new Mission(operand1, operand2, operator, correctAnswer);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("¡Bienvenido a las Misiones de la Calculadora Java!");
+        Scanner scanner = new Scanner(System.in);
+        Calculator myCalculator = new Calculator();
+        int score = 0;
+        int totalMissions = 3;
+
+        for (int i = 0; i < totalMissions; i++) {
+            Mission currentMission = myCalculator.generateMission();
+            System.out.println("
+Misión " + (i + 1) + ": " + currentMission.toString());
+            System.out.print("Tu respuesta: ");
+
+            try {
+                int userAnswer = scanner.nextInt();
+                if (userAnswer == currentMission.correctAnswer) {
+                    System.out.println("¡Correcto!");
+                    score++;
+                } else {
+                    System.out.println("Incorrecto. La respuesta correcta era: " + currentMission.correctAnswer);
+                }
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("Entrada no válida. Por favor, introduce un número.");
+                scanner.next();
+                i--;
+            }
+        }
+
+        System.out.println("
+--- Fin de las Misiones ---");
+        System.out.println("Tu puntuación final: " + score + "/" + totalMissions);
+        scanner.close();
     }
 }
