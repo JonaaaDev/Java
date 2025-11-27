@@ -1,2 +1,1 @@
-# Java
-Calculadora
+Este repositorio contendrá el código para una calculadora en Java desarrollada desde cero.
