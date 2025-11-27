@@ -4,26 +4,48 @@ import java.util.Random;
 
 public class Calculator {
 
+    private static boolean nativeLoaded = false;
+
+    // Bloque estático para cargar la librería nativa al inicio
+    static {
+        try {
+            // Intenta cargar 'libcalculator_native.so' (Linux/Mac) o 'calculator_native.dll' (Windows)
+            // Se debe configurar -Djava.library.path=. al ejecutar si no está en system path
+            System.loadLibrary("calculator_native");
+            nativeLoaded = true;
+            System.out.println("[INFO] Motor C++ cargado exitosamente. Modo Turbo activado.");
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("[WARN] Librería C++ no encontrada. Usando motor Java estándar.");
+        }
+    }
+
+    // Declaración de métodos nativos (implementados en C++)
+    private native double addNative(double a, double b);
+    private native double subtractNative(double a, double b);
+    private native double multiplyNative(double a, double b);
+    private native double divideNative(double a, double b);
+
+    // Métodos públicos (Wrappers con Fallback)
     public double add(double a, double b) {
-        return a + b;
+        return nativeLoaded ? addNative(a, b) : (a + b);
     }
 
     public double subtract(double a, double b) {
-        return a - b;
+        return nativeLoaded ? subtractNative(a, b) : (a - b);
     }
 
     public double multiply(double a, double b) {
-        return a * b;
+        return nativeLoaded ? multiplyNative(a, b) : (a * b);
     }
 
     public double divide(double a, double b) {
-        if (b == 0) {
+        if (!nativeLoaded && b == 0) {
             throw new IllegalArgumentException("No se puede dividir por cero.");
         }
-        return a / b;
+        return nativeLoaded ? divideNative(a, b) : (a / b);
     }
 
-    // Lógica para el modo "Misión" (Juego matemático)
+    // Lógica para el modo "Misión" (Juego matemático) - Se mantiene en Java
     static class Mission {
         int operand1;
         int operand2;
