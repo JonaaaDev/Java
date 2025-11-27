@@ -22,7 +22,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
     public CalculatorGUI() {
         calculatorLogic = new Calculator();
 
-        setTitle("Calculadora Java");
+        setTitle("Calculadora De Jona");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(300, 400);
         setLayout(new BorderLayout());
