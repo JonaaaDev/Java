@@ -13,9 +13,9 @@ public class CalculatorGUI extends JFrame implements ActionListener {
     private JButton decButton, equButton, clrButton, delButton;
 
     private double num1 = 0, num2 = 0, result = 0;
-    private char operator = ' '; // Inicializado vacío
+    private char operator = ' ';
     private boolean hasDecimal = false;
-    private boolean startNewNumber = true; // Control para saber cuándo limpiar pantalla al escribir el segundo número
+    private boolean startNewNumber = true;
 
     private Calculator calculatorLogic;
 
@@ -24,7 +24,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
 
         setTitle("Calculadora Pro");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(320, 450); // Ligeramente más grande
+        setSize(320, 450);
         setLayout(new BorderLayout());
         setLocationRelativeTo(null);
 
@@ -49,7 +49,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             numberButtons[i].addActionListener(this);
         }
 
-        // Inicializar botones de operación
         addButton = createOperatorButton("+");
         subButton = createOperatorButton("-");
         mulButton = createOperatorButton("*");
@@ -58,38 +57,33 @@ public class CalculatorGUI extends JFrame implements ActionListener {
         equButton = createOperatorButton("=");
         clrButton = createOperatorButton("C");
         clrButton.setForeground(Color.RED);
-        delButton = createOperatorButton("DEL"); // Nuevo botón Delete
+        delButton = createOperatorButton("DEL");
         delButton.setForeground(Color.BLUE);
 
-        // Fila 1
         buttonPanel.add(clrButton);
         buttonPanel.add(delButton);
-        buttonPanel.add(new JPanel()); // Espacio vacío decorativo
+        buttonPanel.add(new JPanel());
         buttonPanel.add(divButton);
 
-        // Fila 2
         buttonPanel.add(numberButtons[7]);
         buttonPanel.add(numberButtons[8]);
         buttonPanel.add(numberButtons[9]);
         buttonPanel.add(mulButton);
 
-        // Fila 3
         buttonPanel.add(numberButtons[4]);
         buttonPanel.add(numberButtons[5]);
         buttonPanel.add(numberButtons[6]);
         buttonPanel.add(subButton);
 
-        // Fila 4
         buttonPanel.add(numberButtons[1]);
         buttonPanel.add(numberButtons[2]);
         buttonPanel.add(numberButtons[3]);
         buttonPanel.add(addButton);
 
-        // Fila 5
         buttonPanel.add(decButton);
         buttonPanel.add(numberButtons[0]);
         buttonPanel.add(equButton);
-        buttonPanel.add(new JPanel()); // Relleno para mantener grid
+        buttonPanel.add(new JPanel());
 
         setVisible(true);
     }
@@ -106,7 +100,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
 
-        // 1. Manejo de números
         if ((command.charAt(0) >= '0' && command.charAt(0) <= '9')) {
             if (startNewNumber) {
                 displayField.setText(command);
@@ -117,7 +110,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             return;
         }
 
-        // 2. Manejo de punto decimal
         if (".".equals(command)) {
             if (startNewNumber) {
                 displayField.setText("0.");
@@ -130,7 +122,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             return;
         }
 
-        // 3. Manejo de Borrado (Clear y Delete)
         if ("C".equals(command)) {
             clearAll();
             return;
@@ -140,7 +131,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             String currentText = displayField.getText();
             if (currentText.length() > 0) {
                 displayField.setText(currentText.substring(0, currentText.length() - 1));
-                // Si borramos el punto, permitir ponerlo de nuevo
                 if (!currentText.contains(".")) {
                     hasDecimal = false;
                 }
@@ -148,11 +138,9 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             return;
         }
 
-        // 4. Manejo de Operadores (+, -, *, /)
         if (isOperator(command.charAt(0)) && !"=".equals(command)) {
-            if (displayField.getText().isEmpty()) return; // Protección contra vacíos
+            if (displayField.getText().isEmpty()) return;
             
-            // Si ya teníamos una operación pendiente, calculamos el parcial (encadenamiento)
             if (operator != ' ' && !startNewNumber) {
                 calculate();
             }
@@ -160,7 +148,7 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             try {
                 num1 = Double.parseDouble(displayField.getText());
                 operator = command.charAt(0);
-                startNewNumber = true; // El próximo número limpiará la pantalla
+                startNewNumber = true;
                 hasDecimal = false;
             } catch (NumberFormatException ex) {
                 displayField.setText("Error");
@@ -168,12 +156,11 @@ public class CalculatorGUI extends JFrame implements ActionListener {
             return;
         }
 
-        // 5. Manejo de Igual (=)
         if ("=".equals(command)) {
             if (operator == ' ' || displayField.getText().isEmpty()) return;
             calculate();
-            operator = ' '; // Reseteamos operador
-            startNewNumber = true; // Listo para nuevo cálculo
+            operator = ' ';
+            startNewNumber = true;
         }
     }
 
@@ -188,14 +175,13 @@ public class CalculatorGUI extends JFrame implements ActionListener {
                 case '/': result = calculatorLogic.divide(num1, num2); break;
             }
 
-            // Formatear resultado para quitar .0 si es entero
             if (result % 1 == 0) {
                 displayField.setText(String.valueOf((int) result));
             } else {
                 displayField.setText(String.valueOf(result));
             }
             
-            num1 = result; // Permitir seguir operando sobre el resultado
+            num1 = result;
             
         } catch (IllegalArgumentException ex) {
             displayField.setText("Error: Div 0");
@@ -219,7 +205,6 @@ public class CalculatorGUI extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        // Uso de LookAndFeel del sistema para que se vea nativo
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ignored) { }
